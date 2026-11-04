@@ -1,7 +1,11 @@
-#FPGA
+# FPGA
 *.ghw
 *.cf
 *.vcd
+
+# Tests
+test-results/*
+test-report.md
 
 # Prerequisites
 *.d

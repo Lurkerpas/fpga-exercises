@@ -15,5 +15,27 @@ jobs:
       - name: Set up GHDL
         uses: ghdl/setup-ghdl@v1
 
-      - name: Build all exercises
-        run: make all
+      - name: Generate HDL test report
+        run: python3 .github/scripts/ghdl_report.py
+
+      - name: Publish GitHub summary
+        if: always()
+        run: cat test-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish JUnit test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: HDL test report
+          path: test-results/*.xml
+          reporter: java-junit
+          fail-on-error: true
+
+      - name: Upload report artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ghdl-test-report
+          path: |
+            test-report.md
+            test-results/*.xml
