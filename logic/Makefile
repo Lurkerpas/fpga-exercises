@@ -1,15 +1,17 @@
-.PHONY: all clean
+.PHONY: all clean trace
+
+PROJECT = logic
 
 all: trace
 
-verify: logic_tb.vhd logic.vhd
-	ghdl -a --std=08 logic.vhd logic_tb.vhd
-	ghdl -e --std=08 logic_tb
+verify: ${PROJECT}_tb.vhd ${PROJECT}.vhd
+	ghdl -a --std=08 ${PROJECT}.vhd ${PROJECT}_tb.vhd
+	ghdl -e --std=08 ${PROJECT}_tb
 
 trace: verify
-	ghdl -r --std=08 logic_tb --wave=trace.ghw --stop-time=1us
+	ghdl -r --std=08 ${PROJECT}_tb --wave=trace.ghw --stop-time=1us
 
-view: verify
+view: trace
 	gtkwave trace.ghw
 clean:
-	rm -f *.o *.cf logic_tb
+	rm -f *.o *.cf *.ghw *.vcd
