@@ -1,4 +1,12 @@
-.PHONY: all clean trace
+.PHONY: all clean trace verify quartus_synth_check
+
+QMAP ?= $(QUARTUS_BIN)/quartus_map
+QFIT ?= $(QUARTUS_BIN)/quartus_fit
+QASM ?= $(QUARTUS_BIN)/quartus_asm
+QSTA ?= $(QUARTUS_BIN)/quartus_sta
+QPGM ?= $(QUARTUS_BIN)/quartus_pgm
+QFAMILY ?= "MAX 10"
+QDEVICE ?= 10M08DAF256I7G
 
 all: trace
 
@@ -6,10 +14,24 @@ verify: ${PROJECT}_tb.vhd ${PROJECT}.vhd
 	ghdl -a --std=08 ${PROJECT}.vhd ${PROJECT}_tb.vhd
 	ghdl -e --std=08 ${PROJECT}_tb
 
+quartus_synth_check: ${PROJECT}.vhd
+	@printf '%s\n' \
+		'set_global_assignment -name FAMILY $(QFAMILY)' \
+		'set_global_assignment -name DEVICE $(QDEVICE)' \
+		'set_global_assignment -name TOP_LEVEL_ENTITY $(PROJECT)' \
+		'set_global_assignment -name VHDL_FILE "$(PROJECT).vhd"' \
+		> $(PROJECT).qsf
+	@printf '%s\n' \
+		'PROJECT_REVISION = $(PROJECT)' \
+		> $(PROJECT).qpf
+	$(QMAP) --read_settings_files=on --write_settings_files=off --analysis_and_elaboration $(PROJECT)
+
 trace: verify
 	ghdl -r --std=08 ${PROJECT}_tb --vcd=trace.vcd --stop-time=1us
 
 view: trace
 	gtkwave trace.vcd
 clean:
-	rm -f *.o *.cf *.ghw *.vcd
+	rm -f *.o *.cf *.ghw *.vcd *.qsf *.qpf *.qws *.qdb *.rpt
+
+	
