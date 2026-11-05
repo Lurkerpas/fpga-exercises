@@ -1,17 +1,3 @@
-.PHONY: all clean trace
-
 PROJECT = logic
 
-all: trace
-
-verify: ${PROJECT}_tb.vhd ${PROJECT}.vhd
-	ghdl -a --std=08 ${PROJECT}.vhd ${PROJECT}_tb.vhd
-	ghdl -e --std=08 ${PROJECT}_tb
-
-trace: verify
-	ghdl -r --std=08 ${PROJECT}_tb --wave=trace.ghw --stop-time=1us
-
-view: trace
-	gtkwave trace.ghw
-clean:
-	rm -f *.o *.cf *.ghw *.vcd
+include ../Makefile.project
