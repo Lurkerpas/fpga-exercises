@@ -7,9 +7,9 @@ verify: ${PROJECT}_tb.vhd ${PROJECT}.vhd
 	ghdl -e --std=08 ${PROJECT}_tb
 
 trace: verify
-	ghdl -r --std=08 ${PROJECT}_tb --wave=trace.ghw --stop-time=1us
+	ghdl -r --std=08 ${PROJECT}_tb --vcd=trace.vcd --stop-time=1us
 
 view: trace
-	gtkwave trace.ghw
+	gtkwave trace.vcd
 clean:
 	rm -f *.o *.cf *.ghw *.vcd
