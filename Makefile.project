@@ -8,6 +8,8 @@ QPGM ?= $(QUARTUS_BIN)/quartus_pgm
 QFAMILY ?= "MAX 10"
 QDEVICE ?= 10M08DAF256I7G
 
+SIMULATION_TIME ?= 1us
+
 all: trace
 
 verify: ${PROJECT}_tb.vhd ${PROJECT}.vhd
@@ -28,7 +30,7 @@ quartus_synth_check: ${PROJECT}.vhd
 	$(QMAP) --read_settings_files=on --write_settings_files=off --analysis_and_elaboration $(PROJECT)
 
 trace: verify
-	ghdl -r --std=08 ${PROJECT}_tb --vcd=trace.vcd --stop-time=1us
+	ghdl -r --std=08 ${PROJECT}_tb --vcd=trace.vcd --stop-time=${SIMULATION_TIME}
 
 view: trace
 	gtkwave trace.vcd
