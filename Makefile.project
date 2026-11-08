@@ -20,6 +20,7 @@ quartus_synth_check: ${PROJECT}.vhd
 		'set_global_assignment -name DEVICE $(QDEVICE)' \
 		'set_global_assignment -name TOP_LEVEL_ENTITY $(PROJECT)' \
 		'set_global_assignment -name VHDL_FILE "$(PROJECT).vhd"' \
+		'set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008' \
 		> $(PROJECT).qsf
 	@printf '%s\n' \
 		'PROJECT_REVISION = $(PROJECT)' \

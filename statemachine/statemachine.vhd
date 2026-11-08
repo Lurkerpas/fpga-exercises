@@ -47,8 +47,17 @@ begin
                     null;
             end case;
             ctrl_out <= ctrl_in;
-            ctrl_out(READY_BIT) <= '1' when state = READY else '0';
-            ctrl_out(INITIALIZING_BIT) <= '1' when state = INITIALIZING else '0';
+            -- Quartus does not understand conditional, single-line assignment
+            if (state = READY) then
+                ctrl_out(READY_BIT) <= '1';
+            else
+                ctrl_out(READY_BIT) <= '0';
+            end if;
+            if (state = INITIALIZING) then
+                ctrl_out(INITIALIZING_BIT) <= '1';
+            else
+                ctrl_out(INITIALIZING_BIT) <= '0';
+            end if;
          end if;
     end process;
 
