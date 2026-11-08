@@ -33,11 +33,11 @@ begin
         constant SYMBOL_TIME : time := 105 us; -- 9600 baud, 1 symbol = 1/9600 s = 104.1667 us; +1 to accomodate accuracy
     begin
         -- Reset
-        rst <= '1';
+        rst <= '0';
         wait for 10 us;
         assert tx = '1' report "TX should be idle high after reset" severity failure;
 
-        rst <= '0';
+        rst <= '1';
         -- Start observing TX, giving some time for the clock
         -- We need to observe:
         -- START (0) + S ('01010011', LSB first) + STOP (1)

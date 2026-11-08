@@ -21,3 +21,9 @@ set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
 # 10 MHz oscillator
 set_location_assignment PIN_L3 -to clk
 
+# Reset button on the Maximator shield
+set_location_assignment PIN_R15 -to rst
+
+# USB-UART converter: FPGA transmit line
+set_location_assignment PIN_A13 -to tx
+

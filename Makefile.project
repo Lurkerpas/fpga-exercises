@@ -1,4 +1,4 @@
-.PHONY: all clean trace verify quartus_synth_check quartus_config quartus_synth quartus_program
+.PHONY: all clean trace verify quartus_synth_check quartus_config quartus_synth quartus_program quartus_flash
 
 QMAP ?= $(QUARTUS_BIN)/quartus_map
 QFIT ?= $(QUARTUS_BIN)/quartus_fit
@@ -12,6 +12,7 @@ CABLE ?= USB-Blaster
 Q_OVERRIDES := $(PROJECT).qpf.override $(PROJECT).qsf.override $(PROJECT).sdc.override
 Q_OUT_DIR := output_files
 Q_SOF := $(Q_OUT_DIR)/$(PROJECT).sof
+Q_POF := $(Q_OUT_DIR)/$(PROJECT).pof
 
 SIMULATION_TIME ?= 1us
 
@@ -49,6 +50,13 @@ quartus_synth: quartus_config
 
 quartus_program: quartus_synth
 	$(QPGM) -c "$(CABLE)" -m jtag -o "p;$(Q_SOF)@1"
+
+# Writes the on-chip flash so the design loads at every power-up. MAX 10 flash is
+# written in real-time ISP mode, which requires user mode, so the SOF goes first.
+quartus_flash: quartus_synth
+	@test -f "$(Q_POF)" || { echo "$(Q_POF) was not generated"; exit 1; }
+	$(QPGM) -c "$(CABLE)" -m jtag -o "p;$(Q_SOF)@1"
+	$(QPGM) --bgp -c "$(CABLE)" -m jtag -o "pv;$(Q_POF)@1"
 
 trace: verify
 	ghdl -r --std=08 ${PROJECT}_tb --vcd=trace.vcd --stop-time=${SIMULATION_TIME}

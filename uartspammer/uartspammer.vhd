@@ -58,7 +58,7 @@ end function;
 begin
     process(clk, rst)
     begin
-        if rst = '1' then
+        if rst = '0' then -- device reset is asserted low
             baud_counter <= 0;
             spam_index <= 0;
             shifter <= load_shifter(spam_index);
