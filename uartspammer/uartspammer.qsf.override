@@ -1,0 +1,23 @@
+# maXimator (Kamami) board + multi-function shield, MAX 10 10M08DAF256C8G
+set_global_assignment -name FAMILY "MAX 10"
+set_global_assignment -name DEVICE 10M08DAF256C8GES
+set_global_assignment -name TOP_LEVEL_ENTITY uartspammer
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+
+set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
+set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name VHDL_FILE uartspammer.vhd
+set_global_assignment -name SDC_FILE uartspammer.sdc
+
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name NUM_PARALLEL_PROCESSORS 4
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED WITH WEAK PULL-UP"
+
+# Same I/O standard as the vendor's example projects
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+
+# 10 MHz oscillator
+set_location_assignment PIN_L3 -to clk
+

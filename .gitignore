@@ -69,3 +69,5 @@ dkms.conf
 
 # debug information files
 *.dwo
+*.sdc
+output_files/

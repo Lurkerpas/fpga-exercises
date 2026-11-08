@@ -1,4 +1,4 @@
-.PHONY: all clean trace verify quartus_synth_check
+.PHONY: all clean trace verify quartus_synth_check quartus_config quartus_synth quartus_program
 
 QMAP ?= $(QUARTUS_BIN)/quartus_map
 QFIT ?= $(QUARTUS_BIN)/quartus_fit
@@ -7,6 +7,11 @@ QSTA ?= $(QUARTUS_BIN)/quartus_sta
 QPGM ?= $(QUARTUS_BIN)/quartus_pgm
 QFAMILY ?= "MAX 10"
 QDEVICE ?= 10M08DAF256I7G
+CABLE ?= USB-Blaster
+
+Q_OVERRIDES := $(PROJECT).qpf.override $(PROJECT).qsf.override $(PROJECT).sdc.override
+Q_OUT_DIR := output_files
+Q_SOF := $(Q_OUT_DIR)/$(PROJECT).sof
 
 SIMULATION_TIME ?= 1us
 
@@ -29,12 +34,28 @@ quartus_synth_check: ${PROJECT}.vhd
 		> $(PROJECT).qpf
 	$(QMAP) --read_settings_files=on --write_settings_files=off --analysis_and_elaboration $(PROJECT)
 
+# Copies the *.override files to their final names; fails if any is missing
+quartus_config:
+	@for f in $(Q_OVERRIDES); do \
+		test -f "$$f" || { echo "Missing $$f - cannot run Quartus flow"; exit 1; }; \
+	done
+	@for f in $(Q_OVERRIDES); do cp -f "$$f" "$${f%.override}"; done
+
+quartus_synth: quartus_config
+	$(QMAP) $(PROJECT)
+	$(QFIT) $(PROJECT)
+	$(QASM) $(PROJECT)
+	$(QSTA) $(PROJECT)
+
+quartus_program: quartus_synth
+	$(QPGM) -c "$(CABLE)" -m jtag -o "p;$(Q_SOF)@1"
+
 trace: verify
 	ghdl -r --std=08 ${PROJECT}_tb --vcd=trace.vcd --stop-time=${SIMULATION_TIME}
 
 view: trace
 	gtkwave trace.vcd
 clean:
-	rm -f *.o *.cf *.ghw *.vcd *.qsf *.qpf *.qws *.qdb *.rpt
+	rm -rf *.o *.cf *.ghw *.vcd *.qsf *.qpf *.sdc *.qws *.qdb *.rpt *.summary *.jdi db incremental_db $(Q_OUT_DIR) qdb tmp-clearbox
 
 	
