@@ -18,8 +18,8 @@ SIMULATION_TIME ?= 1us
 
 all: trace
 
-verify: ${PROJECT}_tb.vhd ${PROJECT}.vhd
-	ghdl -a --std=08 ${PROJECT}.vhd ${PROJECT}_tb.vhd
+verify: ${PROJECT}_tb.vhd ${PROJECT}.vhd ${ADDITIONAL_SOURCES}
+	ghdl -a --std=08 ${PROJECT}.vhd ${ADDITIONAL_SOURCES} ${PROJECT}_tb.vhd
 	ghdl -e --std=08 ${PROJECT}_tb
 
 quartus_synth_check: ${PROJECT}.vhd
