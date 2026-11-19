@@ -8,7 +8,8 @@
 *.qpf
 *.qsf
 *.rpt
-
+*.xml
+*/HLS_output/*
 
 # Tests
 test-results/*

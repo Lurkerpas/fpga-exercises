@@ -64,6 +64,6 @@ trace: verify
 view: trace
 	gtkwave trace.vcd
 clean:
-	rm -rf *.o *.cf *.ghw *.vcd *.qsf *.qpf *.sdc *.qws *.qdb *.rpt *.summary *.jdi db incremental_db $(Q_OUT_DIR) qdb tmp-clearbox
+	rm -rf *.o *.cf *.ghw *.vcd *.qsf *.qpf *.sdc *.qws *.qdb *.rpt *.summary *.jdi db incremental_db $(Q_OUT_DIR) qdb tmp-clearbox HLS_output
 
 	

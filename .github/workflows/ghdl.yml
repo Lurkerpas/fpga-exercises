@@ -15,6 +15,34 @@ jobs:
       - name: Set up GHDL
         uses: ghdl/setup-ghdl@v1
 
+      - name: Restore Bambu cache
+        id: bambu-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/bambu
+          key: bambu-2026.11-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Download Bambu
+        if: steps.bambu-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/bambu"
+          curl --fail --location --silent --show-error \
+            --output "$RUNNER_TEMP/bambu/bambu" \
+            https://release.bambuhls.eu/bambu-2026.11.AppImage
+
+      - name: Make Bambu available
+        run: |
+          chmod +x "$RUNNER_TEMP/bambu/bambu"
+          echo "$RUNNER_TEMP/bambu" >> "$GITHUB_PATH"
+          echo "APPIMAGE_EXTRACT_AND_RUN=1" >> "$GITHUB_ENV"
+
+      - name: Save Bambu cache
+        if: steps.bambu-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/bambu
+          key: bambu-2026.11-${{ runner.os }}-${{ runner.arch }}
+
       - name: Generate HDL test report
         run: python3 .github/scripts/ghdl_report.py
 
